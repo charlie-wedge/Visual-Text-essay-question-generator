@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Visual text essay question generator thingy</title>
+    <meta name="author" content="Charlie Wedge"> <!--I have no idea what meta even means or what setting up the author even does - probably nothing-->
+    
+    
+</head>
+
+<body>
+    <h1 class="center" id="title1">Do you need a random question</h1>
+    <h2 class="center" id="title2">for your visual text essay?</h2>
+    <h4 class="center" id="title3">This website will attempt to do that, but probably fail miserably</h4>
+    <button id="button" onclick="ButtonPressed()">Give me a random question!</button>
+    <h2 class="center" id="text"></h2>
+    <h3 class="center" id="text2"></h3>
+</body>
+<style>
+    .center {
+        text-align: center;
+        font-family: "youtubeFont-light";
+    }
+
+    #title1 {
+        font-size: 80px;
+        font-family: "youtubeFont-medium";
+        color: yellow;
+    }
+
+    #title2 {
+        margin-top: -50px;
+        font-size: 50px;
+        color: yellowgreen;
+    }
+
+    #title3 {
+        color: grey;
+    }
+
+    #button {
+
+        width: 40%;
+        height: 100px;
+        margin-top: 50px;
+        margin-left: 30%;
+        margin-right: 30%;
+
+        font-size: 40px;
+        color: plum;
+        font-family: "youtubeFont-medium";
+    }
+
+    #text {
+        margin-top: 40px;
+        color: deepskyblue;
+        font-size: 30px;
+    }
+
+    #text2 {
+        margin-top: 15px;
+        color: deepskyblue;
+        font-size: 25px;
+    }
+
+    * {
+        background-color: cyan;
+    }
+
+    @font-face {
+        font-family: "youtubeFont-medium";
+        src: url("YouTube-Sans-Medium.otf");
+    }
+
+    @font-face {
+        font-family: "youtubeFont-light";
+        src: url("YouTube-Sans-Light.otf");
+    }
+</style>
+<script>
+
+    const texts = [document.getElementById("text"), document.getElementById("text2")];
+
+    // Sets up the score and the speaking thing
+    // console.log(window.speechSynthesis.getVoices().length);
+    var utter = new SpeechSynthesisUtterance();
+    const voices = window.speechSynthesis.getVoices();
+    utter.rate = 0.92;
+    utter.pitch = 0;
+
+    const questions = [
+        ["how", "why", "where", "when"],
+        ["a character or individual", "a conflict", "an important idea", "techniques", "a realistic or unrealistic setting", "the beginning and the ending", "a memorable idea", "a challenging setting", "a key relationship between two or more characters or individuals", "the closing scene or section", "a place or time", "at least one friendship", "a key moment", "at least one challenge", "at least one important object", "an important relationship", "the opening scene", "at least one important object or symbol", "the structure of the text", "an incident", "at least one important decision that a character or individual had to make", "at least one event that was a turning point", "your first impressions of a character or individual", "at least one significant setting", "at least one lesson learned by a character or individual"],
+        ["changed in the text", "was used in the text", "was relatable to you in the text", "changed in the text", "was used to engage the audience in the text", "shocked or surprised you in the text", "was either admired or disliked by you in the text", "changed your perspective in the text", "helped prepare you for another moment in the text", "changed the course of events in the text", "was developed throughout the text by the director/creator", "helped you to understand an important message in the text", "is still relevant to people in today's society", "was worth learning about in the text"]
+    ]
+    const explainQuestions = ["helped you to understand human nature", "is relevant to teenagers today", "was used to create a particular effect", "helped you to understand a particular idea", "helped to engage you", "helped you understand a character or individual", "was important to the text as a whole", "was memorable to you", "is connected to the text as a whole", "was predictable or unexpected", "created feelings towards a character or individual", "created an emotional response in you", "helped you to understand at least one important aspect of the text", "helped you to understand at least one important message in the text", "revealed something to you"];
+
+    function ButtonPressed() {
+
+        var generatedQuestion = ["Describe", "Explain "];
+
+
+        // Generate the first part of the question. (The 'describe' part)
+        var generatedQuestionIndexes = [];
+        for (i = 0; i < questions.length; i++) {
+            generatedQuestionIndexes[i] = Math.floor(Math.random() * questions[i].length);
+            generatedQuestion[0] += " " + questions[i][generatedQuestionIndexes[i]];
+        }
+
+        // Generate the second part of the question. (The 'explain' part)
+        // generatedQuestion[1] += questions[0][generatedQuestionIndexes[0]]; // Add the 'how', 'why', 'where', or 'when' part to the explain question
+        generatedQuestion[1] += Math.random() < 0.5 ? "how" : "why";
+
+        var secondPartOfDescribeQuestion = questions[1][generatedQuestionIndexes[1]];
+
+        if (secondPartOfDescribeQuestion.slice(0, 12) == "at least one") {
+            generatedQuestion[1] += " this";
+            secondPartOfDescribeQuestion = secondPartOfDescribeQuestion.slice(12, secondPartOfDescribeQuestion.length);
+        }
+        else if (secondPartOfDescribeQuestion.split(" ")[0] !== "the") {
+            generatedQuestion[1] += " the";
+            if (secondPartOfDescribeQuestion.split(" ").length > 1) { // Just to make sure we don't delete only one word questions
+                secondPartOfDescribeQuestion = secondPartOfDescribeQuestion.slice(secondPartOfDescribeQuestion.split(" ")[0].length, secondPartOfDescribeQuestion.length);
+            }
+
+        }
+
+        generatedQuestion[1] += " " + secondPartOfDescribeQuestion + " " + explainQuestions[Math.floor(Math.random() * explainQuestions.length)];
+
+        for (i = 0; i < texts.length; i++) { // Set the two texts to things
+            generatedQuestion[i] += ".";
+            texts[i].innerHTML = generatedQuestion[i];
+        }
+        SpeakText(generatedQuestion[0] + " " + generatedQuestion[1]);
+
+    }
+
+
+
+    function SpeakText(text) {
+        window.speechSynthesis.cancel();
+        utter.voice = voices[Math.floor(Math.random() * voices.length)];
+        utter.text = text;
+        window.speechSynthesis.speak(utter);
+    }
+
+    //Talk about an important idea that you think is important because it done important things. Explain why this could have been importanter
+</script>
